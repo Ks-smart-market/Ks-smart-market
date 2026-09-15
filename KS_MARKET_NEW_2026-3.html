@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#15104a">
+<title>KS Shopping</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f5f6fb;color:#17172a}
+button,input{font:inherit}button{cursor:pointer;border:0}
+.top{background:linear-gradient(120deg,#26105f,#111d63);color:#fff;padding:10px 4%;font-size:13px}
+header{background:linear-gradient(120deg,#4b148c,#182a7a);padding:16px 4%;color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 20px #0002}
+.nav{max-width:1250px;margin:auto;display:flex;align-items:center;gap:18px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:900;font-size:25px;white-space:nowrap}
+.logoMark{width:45px;height:45px;border-radius:13px;background:linear-gradient(135deg,#ff2bd6,#ffb400);display:grid;place-items:center;color:#fff;font-size:25px;box-shadow:0 5px 15px #0004}
+.search{flex:1;display:flex;background:#fff;border-radius:10px;overflow:hidden;height:44px}
+.search input{border:0;outline:0;padding:0 15px;flex:1}
+.search button{width:52px;background:#ffd83d;color:#17172a;font-weight:bold}
+.navBtn{background:transparent;color:#fff;padding:9px;border-radius:8px}.navBtn:hover{background:#ffffff18}
+.cartCount{background:#ff315d;border-radius:20px;padding:2px 7px;font-size:11px}
+main{max-width:1250px;margin:auto;padding:20px 4%}
+.hero{border-radius:20px;padding:30px;background:linear-gradient(120deg,#241064,#1a3a98 55%,#e6299b);color:white;display:flex;justify-content:space-between;align-items:center;overflow:hidden;box-shadow:0 10px 30px #1a165522}
+.hero h1{font-size:38px;margin:0 0 10px}.hero p{opacity:.9;margin:0 0 18px}.shopBtn{padding:12px 20px;border-radius:9px;background:#ffd53d;font-weight:bold}
+.heroArt{font-size:110px;transform:rotate(-8deg);filter:drop-shadow(0 15px 12px #0004)}
+h2{margin:28px 0 14px}
+.categories{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+.cat{min-width:78px;flex:0 0 78px;background:#fff;border-radius:12px;padding:8px 5px;text-align:center;border:1px solid #f0c400;box-shadow:none;transition:.2s}
+.cat:hover{transform:translateY(-2px);background:#fffdf0}.catIcon{font-size:22px;margin-bottom:4px}.cat small{font-weight:bold}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-top:28px;gap:10px}.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{padding:8px 12px;border-radius:20px;background:#fff;border:1px solid #ddd}.chip.active{background:#241064;color:#fff}
+.products{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-top:14px}
+.card{background:#fff;border-radius:15px;overflow:hidden;box-shadow:0 3px 15px #1111;position:relative}
+.pic{height:210px;background:#f7f7fb;overflow:hidden}.pic img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}.card:hover .pic img{transform:scale(1.05)}
+.info{padding:13px}.name{font-weight:bold}.price{font-size:19px;font-weight:900;margin:7px 0}.old{text-decoration:line-through;color:#888;font-size:12px}.add{width:100%;background:#241064;color:#fff;padding:10px;border-radius:8px}.heart{position:absolute;right:10px;top:10px;background:#fff;border-radius:50%;width:34px;height:34px;font-size:18px}
+.page{display:none}.page.active{display:block}
+.panel{background:#fff;border-radius:18px;padding:22px;box-shadow:0 3px 15px #1111;margin-top:15px}
+.profileHead{display:flex;align-items:center;gap:15px}.avatar{width:75px;height:75px;border-radius:50%;background:linear-gradient(135deg,#ff2bd6,#ffc400);display:grid;place-items:center;color:#fff;font-size:30px;font-weight:bold}
+.menuGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:18px}.menuItem{padding:15px;border:1px solid #eee;border-radius:12px;background:#fafaff;text-align:left}
+.sell{background:linear-gradient(120deg,#15104a,#51208f);color:#fff}.sell input,.sell select{width:100%;padding:12px;border-radius:9px;border:1px solid #ddd;margin:6px 0 12px;outline:0}
+.sell .submit{background:#ffd53d;color:#111;padding:12px 18px;border-radius:9px;font-weight:bold}
+.cartRow{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #eee}.qty button{padding:4px 9px;background:#eee;border-radius:5px}
+.bottom{display:none}
+.empty{text-align:center;padding:45px;color:#777}
+footer{margin-top:35px;background:#15102f;color:#ddd;padding:30px 4%;text-align:center}
+@media(max-width:850px){.categories{grid-template-columns:repeat(5,1fr)}.products{grid-template-columns:repeat(2,1fr)}.heroArt{font-size:75px}.nav{gap:8px}.logo span{display:none}.search{order:3;flex-basis:100%}header{padding-bottom:12px}.nav{flex-wrap:wrap}}
+@media(max-width:520px){.top{font-size:11px}.categories{grid-template-columns:repeat(3,1fr)}.products{grid-template-columns:repeat(2,1fr);gap:9px}.pic{height:155px}.hero{padding:22px}.hero h1{font-size:27px}.heroArt{display:none}.navBtn{padding:7px 4px}.bottom{display:flex;position:fixed;bottom:0;left:0;right:0;background:#fff;z-index:30;justify-content:space-around;padding:9px;box-shadow:0 -3px 15px #0002}.bottom button{background:none;font-size:11px}.bottom b{display:block;font-size:20px}footer{padding-bottom:80px}}
+
+/* KS MARKET mini category + bottom search upgrade */
+.search{background:#fff;border:2px solid #f4c400;border-radius:12px;overflow:hidden}
+.search input{background:#fff;border:0;outline:0}
+.search button{background:#f4c400;color:#111;border:0}
+@media(max-width:520px){
+  header{padding-bottom:8px}
+  .categories{gap:7px}
+  .cat{min-width:72px;flex-basis:72px;padding:7px 4px;border-color:#f4c400}
+  .catIcon{font-size:20px;margin-bottom:2px}
+  .cat small{font-size:10px}
+  .search{
+    position:fixed;
+    left:10px;right:10px;bottom:62px;
+    z-index:40;
+    height:44px;
+    display:flex;
+    box-shadow:0 4px 18px #0002;
+  }
+  .search input{flex:1;font-size:13px;padding:0 10px}
+  .search button{width:46px;font-size:18px}
+  .bottom{padding-top:7px;padding-bottom:7px}
+  body{padding-bottom:118px}
+}
+
+</style>
+</head>
+<body>
+<div class="top">🚚 Fast delivery • Great deals • Secure shopping • 24/7 support</div>
+<header>
+ <div class="nav">
+  <div class="logo"><div class="logoMark">KS</div><span>KS MARKET</span></div>
+  <div class="search"><input id="search" placeholder="Search products, brands and more..." oninput="searchProducts()"><button onclick="searchProducts()">🔍</button></div>
+  <button class="navBtn" onclick="showPage('profile')">👤 Account</button><button class="navBtn" onclick="showPage('adminLogin')">🔐 Admin</button>
+  <button class="navBtn" onclick="showPage('cart')">🛒 <span class="cartCount" id="cartCount">0</span></button>
+ </div>
+</header>
+
+<main>
+<section id="home" class="page active">
+ <div class="hero"><div><h1>Shop Smart with KS</h1><p>Fashion, mobiles, electronics, beauty, home and more.</p><button class="shopBtn" onclick="document.getElementById('products').scrollIntoView()">Shop Now →</button></div><div class="heroArt">🛍️</div></div>
+
+ <h2>Shop by Category</h2>
+ <div class="categories">
+  <button class="cat" onclick="filterCat('For You')"><div class="catIcon">✨</div><small>For You</small></button>
+  <button class="cat" onclick="filterCat('Fashion')"><div class="catIcon">👗</div><small>Fashion</small></button>
+  <button class="cat" onclick="filterCat('Mobile')"><div class="catIcon">📱</div><small>Mobile</small></button>
+  <button class="cat" onclick="filterCat('Electronic')"><div class="catIcon">🎧</div><small>Electronic</small></button>
+  <button class="cat" onclick="filterCat('Beauty')"><div class="catIcon">💄</div><small>Beauty</small></button>
+  <button class="cat" onclick="filterCat('Home')"><div class="catIcon">🏠</div><small>Home</small></button>
+  <button class="cat" onclick="filterCat('Appliance')"><div class="catIcon">⚡</div><small>Appliance</small></button>
+  <button class="cat" onclick="filterCat('Toys & Baby Care')"><div class="catIcon">🧸</div><small>Toys & Baby</small></button>
+  <button class="cat" onclick="filterCat('Food')"><div class="catIcon">🍔</div><small>Food</small></button>
+ </div>
+
+ <div class="toolbar"><h2 id="products">Popular Products</h2><div class="chips"><button class="chip active" onclick="filterCat('For You')">All</button><button class="chip" onclick="filterCat('Fashion')">Fashion</button><button class="chip" onclick="filterCat('Mobile')">Mobile</button></div></div>
+ <div class="products" id="productGrid"></div>
+</section>
+
+<section id="cart" class="page">
+ <h2>🛒 My Cart</h2><div class="panel" id="cartBox"></div>
+</section>
+
+<section id="profile" class="page">
+ <h2>👤 Account & Profile</h2>
+ <div class="panel">
+  <div class="profileHead"><div class="avatar">KS</div><div><h2 style="margin:0">My KS Account</h2><p>Login to see orders, wishlist and offers.</p></div></div>
+  <div class="menuGrid">
+   <button class="menuItem">📦 My Orders<br><small>Track your purchases</small></button>
+   <button class="menuItem">❤️ Wishlist<br><small>Saved products</small></button>
+   <button class="menuItem">📍 Addresses<br><small>Manage delivery addresses</small></button>
+   <button class="menuItem">💳 Payments<br><small>Payment options</small></button>
+   <button class="menuItem">🎁 Coupons<br><small>Available offers</small></button>
+   <button class="menuItem" onclick="openWhatsAppSupport()">🆘 Help Center<br><small>24/7 WhatsApp Support</small></button>
+   <button class="menuItem">⚙️ Settings<br><small>Account settings</small></button>
+  </div>
+ </div>
+</section>
+
+<section id="sell" class="page">
+ <h2>🏪 Sell on KS</h2>
+ <div class="panel sell">
+  <h2>Start selling with KS</h2><p>List your products and reach more customers.</p>
+  <label>Seller / Shop Name</label><input id="sellerShop" placeholder="Enter shop name">
+  <label>Mobile Number</label><input id="sellerMobile" type="tel" placeholder="Enter mobile number">
+  <label>Product Category</label><select id="sellerCategory"><option>Fashion</option><option>Mobile</option><option>Electronic</option><option>Beauty</option><option>Home</option><option>Appliance</option><option>Toys & Baby Care</option><option>Food</option></select>
+  <label>Product Name</label><input id="sellerProduct" placeholder="Enter product name">
+  <label>Product Price</label><input id="sellerPrice" type="number" placeholder="₹ Price">
+  <button class="submit" onclick="submitSeller()">Register / List Product</button>
+ </div>
+</section>
+</main>
+
+
+<section id="adminLogin" class="page">
+  <h2>🔐 Admin Login</h2>
+  <div class="panel" style="max-width:520px;margin:15px auto">
+    <h2>KS MARKET Admin</h2>
+    <p>Use the administrator account created in Supabase Authentication.</p>
+    <label>Admin Email</label>
+    <input id="adminId" value="ks664897@gmail.com" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0 12px" placeholder="admin@example.com">
+    <label>Password</label>
+    <input id="adminPass" type="password" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0 12px" placeholder="Enter password">
+    <button class="shopBtn" onclick="adminLogin()">Login</button>
+    <button class="chip" type="button" onclick="testSupabaseConnection()" style="margin-left:8px">🔎 Test Connection</button>
+    <p id="adminLoginMsg" style="color:#c00"></p>
+    <p id="supabaseStatus" style="margin-top:8px;color:#555"></p>
+  </div>
+</section>
+
+<section id="admin" class="page">
+  <h2>🛠️ Admin Dashboard</h2>
+  <div class="panel">
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="chip active" onclick="showAdminTab('orders')">📦 Orders</button>
+      <button class="chip" onclick="showAdminTab('sellers')">🏪 Seller Approvals</button>
+      <button class="chip" onclick="adminLogout()">🚪 Logout</button>
+    </div>
+    <div id="adminOrders" style="margin-top:18px"></div>
+    <div id="adminSellers" style="margin-top:18px;display:none"></div>
+  </div>
+</section>
+
+<section id="checkout" class="page">
+  <h2>🧾 Checkout</h2>
+  <div class="panel" style="max-width:650px">
+    <p>Fill in your delivery details. Your order will be sent to the KS MARKET order system.</p>
+    <input id="customerName" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0" placeholder="Full name">
+    <input id="customerPhone" type="tel" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0" placeholder="Mobile number">
+    <textarea id="customerAddress" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0;min-height:90px" placeholder="Delivery address"></textarea>
+    <select id="paymentMethod" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:9px;margin:6px 0">
+      <option>Cash on Delivery</option>
+      <option>Online Payment</option>
+    </select>
+    <button class="shopBtn" onclick="placeOrder()">✅ Place Order</button>
+  </div>
+</section>
+
+
+<section class="page" id="supabaseSetup">
+  <h2>⚙️ Supabase Setup</h2>
+  <div class="panel">
+    <h3>Connection required</h3>
+    <p>Open this file in a text editor and replace <b>YOUR_SUPABASE_PROJECT_URL</b> and <b>YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY</b> near the top of the JavaScript.</p>
+    <p>Then create the database tables and RLS policies using the SQL supplied with this project.</p>
+    <p><b>Never put a Supabase service_role/secret key in this HTML file.</b></p>
+  </div>
+</section>
+
+<footer>© 2026 KS MARKET • Shop Smart • Live Better</footer>
+<div class="bottom">
+ <button onclick="showPage('home')"><b>🏠</b>Home</button>
+ <button onclick="showPage('cart')"><b>🛒</b>Cart</button>
+ <button onclick="showPage('sell')"><b>🏪</b>Sell on KS</button>
+ <button onclick="showPage('profile')"><b>👤</b>Account</button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const products=[
+ {n:"Trendy Casual Dress",c:"Fashion",p:699,o:999,img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?auto=format&fit=crop&w=700&q=85"},
+ {n:"Men's Premium Sneakers",c:"Fashion",p:899,o:1499,img:"https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=85"},
+ {n:"Smartphone 5G",c:"Mobile",p:12999,o:15999,img:"https://images.unsplash.com/photo-1598327105666-5b89351aff97?auto=format&fit=crop&w=700&q=85"},
+ {n:"Wireless Earbuds",c:"Electronic",p:799,o:1499,img:"https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=700&q=85"},
+ {n:"Smart Watch",c:"Electronic",p:1299,o:2499,img:"https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=700&q=85"},
+ {n:"Beauty Care Kit",c:"Beauty",p:499,o:799,img:"https://images.unsplash.com/photo-1556228578-8c89e6adf883?auto=format&fit=crop&w=700&q=85"},
+ {n:"Modern Table Lamp",c:"Home",p:599,o:999,img:"https://images.unsplash.com/photo-1507473885765-e6ed057f782c?auto=format&fit=crop&w=700&q=85"},
+ {n:"Air Fryer",c:"Appliance",p:2999,o:3999,img:"https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=700&q=85"},
+ {n:"Kids Toy Set",c:"Toys & Baby Care",p:449,o:699,img:"https://images.unsplash.com/photo-1596461404969-9ae70f2830c1?auto=format&fit=crop&w=700&q=85"},
+ {n:"Baby Care Combo",c:"Toys & Baby Care",p:599,o:899,img:"https://images.unsplash.com/photo-1515488042361-ee00e0ddd4e4?auto=format&fit=crop&w=700&q=85"},
+ {n:"Snack & Food Combo",c:"Food",p:299,o:399,img:"https://images.unsplash.com/photo-1621939514649-280e2aa1f1e3?auto=format&fit=crop&w=700&q=85"},
+ {n:"Kitchen Storage Set",c:"Home",p:749,o:1199,img:"https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=700&q=85"}
+];
+let cart=[];
+const grid=document.getElementById('productGrid');
+function render(list=products){
+ grid.innerHTML=list.map((x,i)=>`<div class="card">
+ <button class="heart" onclick="this.textContent=this.textContent==='♡'?'♥':'♡'">♡</button>
+ <div class="pic"><img src="${x.img}" alt="${x.n}" loading="lazy" onerror="this.style.display='none';this.parentElement.innerHTML='<span style="font-size:55px">🛍️</span>'"></div>
+ <div class="info"><div class="name">${x.n}</div><div class="price">₹${x.p.toLocaleString()} <span class="old">₹${x.o.toLocaleString()}</span></div>
+ <button class="add" onclick="addCart(${products.indexOf(x)})">Add to Cart</button></div></div>`).join('')||'<div class="empty">No products found.</div>';
+}
+function addCart(i){cart.push(products[i]);document.getElementById('cartCount').textContent=cart.length;alert(products[i].n+' added to cart');}
+function renderCart(){
+ const box=document.getElementById('cartBox');
+ if(!cart.length){box.innerHTML='<div class="empty">Your cart is empty 🛒<br><br>Start shopping and add products.</div>';return}
+ let total=cart.reduce((s,x)=>s+x.p,0);
+ box.innerHTML=cart.map((x,i)=>`<div class="cartRow"><span><b>${x.n}</b><br>₹${x.p}</span><button onclick="cart.splice(${i},1);document.getElementById('cartCount').textContent=cart.length;renderCart()">Remove</button></div>`).join('')+`<h2>Total: ₹${total.toLocaleString()}</h2><button class="shopBtn" onclick="showPage('checkout')">Proceed to Checkout</button>`;
+}
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ document.getElementById(id).classList.add('active');
+ if(id==='cart')renderCart();
+ scrollTo({top:0,behavior:'smooth'});
+}
+function filterCat(c){
+ showPage('home');
+ if(c==='For You')render(products);else render(products.filter(x=>x.c===c));
+}
+function searchProducts(){
+ const q=document.getElementById('search').value.toLowerCase();
+ render(products.filter(x=>(x.n+' '+x.c).toLowerCase().includes(q)));
+}
+function openWhatsAppSupport(){
+  const phone="916289725346";
+  const message="Hello KS MARKET Support, I need help with my app/order. My problem is: ";
+  const url="https://wa.me/"+phone+"?text="+encodeURIComponent(message);
+  window.open(url,"_blank");
+}
+
+
+
+/* =========================================================
+   KS MARKET — SUPABASE CONNECTION
+   1) Create a Supabase project.
+   2) Replace the two values below with your project's
+      Project URL and Publishable/anon key.
+   3) NEVER put a service_role/secret key in this file.
+   ========================================================= */
+const SUPABASE_URL = "https://aqlqvawwucefznhkzim.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_-dF7VixdD4q6kg_N5F1_PQ_ie7cWJ9n";
+
+let sb = null;
+if (SUPABASE_URL.startsWith("http") && !SUPABASE_URL.includes("YOUR_") &&
+    SUPABASE_ANON_KEY && !SUPABASE_ANON_KEY.includes("YOUR_")) {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
+
+async function requireSupabase(){
+  if(!sb){
+    alert("Supabase is not configured. Please check SUPABASE_URL and the Publishable key.");
+    return false;
+  }
+
+  // Android Files/Drive can open HTML as content://. Supabase Auth
+  // requests may fail from that local origin. Tell the user clearly
+  // instead of showing the vague "Failed to fetch" message.
+  const protocol = window.location.protocol;
+  if(protocol === "content:" || protocol === "file:"){
+    alert("KS MARKET is opened as a local content:///file:// page. Supabase login may be blocked in this mode. Open the same HTML from a web host (for example GitHub Pages/Netlify) and then login again.");
+    return false;
+  }
+  return true;
+}
+
+async function customerSignUp(email,password,name,phone){
+  if(!(await requireSupabase())) return;
+  const {data,error} = await sb.auth.signUp({
+    email, password,
+    options:{data:{full_name:name, phone}}
+  });
+  if(error) return alert("Signup failed: "+error.message);
+  alert(data.session ? "Account created successfully." :
+    "Account created. Check your email if email confirmation is enabled.");
+}
+
+async function customerLogin(email,password){
+  if(!(await requireSupabase())) return;
+  const {error} = await sb.auth.signInWithPassword({email,password});
+  if(error) return alert("Login failed: "+error.message);
+  alert("✅ Login successful.");
+  showPage("profile");
+}
+
+async function customerLogout(){
+  if(sb) await sb.auth.signOut();
+}
+
+async function getCurrentUser(){
+  if(!sb) return null;
+  const {data} = await sb.auth.getUser();
+  return data?.user || null;
+}
+
+/* Save a real order in Supabase. RLS should allow the authenticated
+   customer to insert their own order. */
+async function saveOrderToSupabase(order){
+  if(!(await requireSupabase())) return false;
+  const user = await getCurrentUser();
+  if(!user){
+    alert("Please create/login to your customer account before placing an order.");
+    return false;
+  }
+
+  const {data,error} = await sb.from("orders").insert({
+    customer_id:user.id,
+    customer_name:order.name,
+    customer_phone:order.phone,
+    delivery_address:order.address,
+    payment_method:order.payment,
+    total_amount:order.total,
+    status:"pending"
+  }).select().single();
+
+  if(error){
+    alert("Order could not be saved: "+error.message);
+    return false;
+  }
+
+  const itemRows = order.items.map(x=>({
+    order_id:data.id,
+    product_name:x.n,
+    category:x.c || null,
+    unit_price:x.p,
+    quantity:1
+  }));
+
+  const {error:itemError} = await sb.from("order_items").insert(itemRows);
+  if(itemError){
+    alert("Order was created but its items could not be saved: "+itemError.message);
+    return false;
+  }
+  return true;
+}
+
+/* Admin login uses Supabase Auth — no admin password is stored in
+   the browser code. Create your admin user in Supabase Auth and put
+   its email in admin_users. */
+
+async function testSupabaseConnection(){
+  const status = document.getElementById("supabaseStatus");
+  if(status) status.textContent = "Checking Supabase connection…";
+  if(!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL.includes("YOUR_") || SUPABASE_ANON_KEY.includes("YOUR_")){
+    if(status) status.textContent = "❌ Supabase URL/key is missing.";
+    return false;
+  }
+  if(!window.supabase){
+    if(status) status.textContent = "❌ Supabase library did not load. Check internet connection.";
+    return false;
+  }
+  try{
+    const r = await fetch(SUPABASE_URL + "/auth/v1/settings?ks_check=1", {
+      method:"GET",
+      headers:{ "apikey": SUPABASE_ANON_KEY },
+      cache:"no-store"
+    });
+    const body = await r.text();
+    if(r.ok){
+      if(status) status.textContent = "✅ Supabase connection is working.";
+      return true;
+    }
+    if(status) status.textContent = "❌ Supabase returned HTTP " + r.status + ". " + body.slice(0,180);
+    return false;
+  }catch(err){
+    console.error("Supabase connection test:", err);
+    if(status) status.textContent = "❌ Browser could not reach Supabase. Check internet, VPN/ad-blocking, or project URL. " + (err?.message || "");
+    return false;
+  }
+}
+
+async function supabaseAdminLogin(email,password){
+  if(!(await requireSupabase())) return false;
+  try {
+    const connectionOK = await testSupabaseConnection();
+    if(!connectionOK){
+      alert("Admin login failed because KS MARKET cannot connect to Supabase. Tap “Test Connection” to see the exact problem.");
+      return false;
+    }
+    const {data,error} = await sb.auth.signInWithPassword({email,password});
+    if(error){
+      alert("Admin login failed: "+error.message);
+      return false;
+    }
+
+  const {data:admin,error:adminError} = await sb
+    .from("admin_users").select("user_id").eq("user_id",data.user.id).maybeSingle();
+
+  if(adminError || !admin){
+    await sb.auth.signOut();
+    alert("This account is not authorized as a KS MARKET admin.");
+    return false;
+  }
+    sessionStorage.setItem("ks_admin_logged_in","1");
+    sessionStorage.setItem("ks_admin_email",email);
+    return true;
+  } catch(err) {
+    console.error("KS MARKET Supabase admin login error:", err);
+    alert("Admin login could not connect to Supabase. If you opened this HTML from Google Files/Drive (content://), upload it to a web host first. Otherwise check your internet connection. Details: " + (err?.message || err));
+    return false;
+  }
+}
+
+async function loadOrdersFromSupabase(){
+  if(!sb) return;
+  const {data,error} = await sb
+    .from("orders")
+    .select("*, order_items(*)")
+    .order("created_at",{ascending:false});
+  if(error){
+    console.error(error);
+    return;
+  }
+  orders = (data || []).map(o=>({
+    id:o.id,
+    date:new Date(o.created_at).toLocaleString(),
+    name:o.customer_name || "",
+    phone:o.customer_phone || "",
+    address:o.delivery_address || "",
+    payment:o.payment_method || "",
+    total:Number(o.total_amount || 0),
+    status:(o.status || "pending").replace(/^./,m=>m.toUpperCase()),
+    items:(o.order_items || []).map(i=>({n:i.product_name,p:Number(i.unit_price),c:i.category || ""}))
+  }));
+  renderAdminOrders();
+}
+
+async function updateOrderStatusSupabase(orderId,status){
+  if(!sb) return;
+  const {error} = await sb.from("orders")
+    .update({status:status.toLowerCase()})
+    .eq("id",orderId);
+  if(error) return alert("Could not update order: "+error.message);
+  await loadOrdersFromSupabase();
+}
+
+async function loadSellersFromSupabase(){
+  if(!sb) return;
+  const {data,error} = await sb.from("seller_requests")
+    .select("*").order("created_at",{ascending:false});
+  if(error){ console.error(error); return; }
+  sellers = (data || []).map(s=>({
+    id:s.id,date:new Date(s.created_at).toLocaleString(),
+    shop:s.shop_name,mobile:s.mobile,category:s.category,
+    product:s.product_name,price:s.product_price,status:s.status
+  }));
+  renderAdminSellers();
+}
+
+async function updateSellerStatusSupabase(id,status){
+  if(!sb) return;
+  const {error} = await sb.from("seller_requests")
+    .update({status:status.toLowerCase()}).eq("id",id);
+  if(error) return alert("Could not update seller request: "+error.message);
+  await loadSellersFromSupabase();
+}
+
+
+/* ===== KS MARKET Admin / Order / Seller approval system =====
+   Admin login: the email may be pre-filled, but the password is never stored in this file.
+   Never publish a Supabase secret/service_role key or an admin password in this file.
+
+   This version stores data in the browser's localStorage.
+   For a real public app with multiple customers/devices, connect a secure backend/database.
+*/
+let orders = JSON.parse(localStorage.getItem("ks_orders") || "[]");
+let sellers = JSON.parse(localStorage.getItem("ks_sellers") || "[]");
+
+function saveKSData(){
+  /* Local fallback only. Supabase is the source of truth when configured. */
+  localStorage.setItem("ks_orders", JSON.stringify(orders));
+  localStorage.setItem("ks_sellers", JSON.stringify(sellers));
+}
+
+async function adminLogin(){
+  const email = document.getElementById("adminId").value.trim();
+  const pass = document.getElementById("adminPass").value;
+  const msg = document.getElementById("adminLoginMsg");
+  if(!email || !pass){
+    msg.textContent = "Enter your Supabase admin email and password.";
+    return;
+  }
+  const ok = await supabaseAdminLogin(email,pass);
+  if(ok){
+    msg.textContent = "";
+    showPage("admin");
+    await renderAdmin();
+  }
+}
+async function adminLogout(){
+  if(sb) await sb.auth.signOut();
+  sessionStorage.removeItem("ks_admin_logged_in");
+  sessionStorage.removeItem("ks_admin_email");
+  showPage("adminLogin");
+}
+function adminGuard(){
+  if(sessionStorage.getItem("ks_admin_logged_in") !== "1"){
+    showPage("adminLogin");
+    return false;
+  }
+  return true;
+}
+
+async function renderAdmin(){
+  if(!adminGuard()) return;
+  if(sb && sessionStorage.getItem("ks_admin_logged_in")==="1"){
+    await loadOrdersFromSupabase();
+    await loadSellersFromSupabase();
+  }else{
+    renderAdminOrders();
+    renderAdminSellers();
+  }
+}
+
+function renderAdminOrders(){
+  const box = document.getElementById("adminOrders");
+  if(!orders.length){
+    box.innerHTML = '<div class="empty">No orders yet 📦</div>';
+    return;
+  }
+  box.innerHTML = orders.map((o,i)=>{
+    const items = o.items.map(x=>`${x.n} (₹${x.p})`).join(", ");
+    return `<div style="border:1px solid #eee;border-radius:12px;padding:14px;margin:10px 0">
+      <b>Order #${o.id}</b> • ${o.date}<br>
+      <b>Customer:</b> ${escapeHTML(o.name)} | ${escapeHTML(o.phone)}<br>
+      <b>Address:</b> ${escapeHTML(o.address)}<br>
+      <b>Items:</b> ${escapeHTML(items)}<br>
+      <b>Total:</b> ₹${o.total.toLocaleString()} • <b>Payment:</b> ${escapeHTML(o.payment)}<br>
+      <b>Status:</b> <span>${escapeHTML(o.status)}</span>
+      <div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap">
+        <button class="chip" onclick="setOrderStatus(${i},'Approved')">✅ Approve</button>
+        <button class="chip" onclick="setOrderStatus(${i},'Rejected')">❌ Reject</button>
+        <button class="chip" onclick="setOrderStatus(${i},'Pending')">⏳ Pending</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function renderAdminSellers(){
+  const box = document.getElementById("adminSellers");
+  if(!sellers.length){
+    box.innerHTML = '<div class="empty">No seller applications yet 🏪</div>';
+    return;
+  }
+  box.innerHTML = sellers.map((s,i)=>`
+    <div style="border:1px solid #eee;border-radius:12px;padding:14px;margin:10px 0">
+      <b>${escapeHTML(s.shop)}</b> • ${escapeHTML(s.date)}<br>
+      Mobile: ${escapeHTML(s.mobile)}<br>
+      Product: ${escapeHTML(s.product)} • Category: ${escapeHTML(s.category)}<br>
+      Price: ₹${Number(s.price||0).toLocaleString()}<br>
+      <b>Status:</b> ${escapeHTML(s.status)}
+      <div style="margin-top:10px;display:flex;gap:7px;flex-wrap:wrap">
+        <button class="chip" onclick="setSellerStatus(${i},'Approved')">✅ Approve Sale</button>
+        <button class="chip" onclick="setSellerStatus(${i},'Rejected')">❌ Reject</button>
+        <button class="chip" onclick="setSellerStatus(${i},'Pending')">⏳ Pending</button>
+      </div>
+    </div>`).join("");
+}
+
+async function setOrderStatus(i,status){
+  if(sb && orders[i]?.id){
+    await updateOrderStatusSupabase(orders[i].id,status);
+    return;
+  }
+  orders[i].status = status;
+  saveKSData();
+  renderAdminOrders();
+}
+async function setSellerStatus(i,status){
+  if(sb && sellers[i]?.id){
+    await updateSellerStatusSupabase(sellers[i].id,status);
+    return;
+  }
+  sellers[i].status = status;
+  saveKSData();
+  renderAdminSellers();
+}
+function showAdminTab(tab){
+  if(!adminGuard()) return;
+  document.getElementById("adminOrders").style.display = tab==="orders" ? "block" : "none";
+  document.getElementById("adminSellers").style.display = tab==="sellers" ? "block" : "none";
+  renderAdmin();
+}
+
+async function placeOrder(){
+  const name = document.getElementById("customerName").value.trim();
+  const phone = document.getElementById("customerPhone").value.trim();
+  const address = document.getElementById("customerAddress").value.trim();
+  const payment = document.getElementById("paymentMethod").value;
+  if(!name || !phone || !address){
+    alert("Please fill name, mobile number and address.");
+    return;
+  }
+  if(!cart.length){
+    alert("Your cart is empty.");
+    return;
+  }
+  const total = cart.reduce((s,x)=>s+x.p,0);
+  const order = {
+    id: "KS" + Date.now().toString().slice(-8),
+    date: new Date().toLocaleString(),
+    name, phone, address, payment, total,
+    items: cart.map(x=>({n:x.n,p:x.p,c:x.c})),
+    status:"Pending"
+  };
+
+  if(sb){
+    const ok = await saveOrderToSupabase(order);
+    if(!ok) return;
+  }else{
+    orders.unshift(order);
+    saveKSData();
+  }
+
+  cart = [];
+  document.getElementById("cartCount").textContent = "0";
+  alert("✅ Order placed successfully! Status: Pending approval.");
+  showPage("profile");
+}
+async function submitSeller(){
+  const shop = document.getElementById("sellerShop").value.trim();
+  const mobile = document.getElementById("sellerMobile").value.trim();
+  const category = document.getElementById("sellerCategory").value;
+  const product = document.getElementById("sellerProduct").value.trim();
+  const price = document.getElementById("sellerPrice").value;
+  if(!shop || !mobile || !product || !price){
+    alert("Please fill all seller details.");
+    return;
+  }
+
+  if(sb){
+    const user = await getCurrentUser();
+    if(!user){
+      alert("Please login as a seller/customer account before submitting a sale request.");
+      return;
+    }
+    const {error} = await sb.from("seller_requests").insert({
+      user_id:user.id, shop_name:shop, mobile,
+      category, product_name:product,
+      product_price:Number(price), status:"pending"
+    });
+    if(error) return alert("Seller request failed: "+error.message);
+  }else{
+    sellers.unshift({
+      id:"SELL"+Date.now().toString().slice(-7),
+      date:new Date().toLocaleString(),
+      shop,mobile,category,product,price,status:"Pending"
+    });
+    saveKSData();
+  }
+
+  alert("✅ Seller/product request submitted. Admin approval is required before sale.");
+  showPage("profile");
+}
+function escapeHTML(value){
+  return String(value ?? "").replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+/* Replace showPage behavior for protected admin page */
+const _showPageOriginal = showPage;
+showPage = function(id){
+  if(id === "admin" && !adminGuard()) return;
+  _showPageOriginal(id);
+  if(id === "admin") renderAdmin();
+};
+
+
+render();
+</script>
+
+<!--
+KS MARKET SUPABASE SQL SETUP
+Run this SQL in Supabase SQL Editor BEFORE using the connected app.
+
+create table if not exists public.admin_users (
+  user_id uuid primary key references auth.users(id) on delete cascade
+);
+
+create table if not exists public.orders (
+  id bigint generated by default as identity primary key,
+  customer_id uuid not null references auth.users(id) on delete cascade,
+  customer_name text not null,
+  customer_phone text not null,
+  delivery_address text not null,
+  payment_method text not null,
+  total_amount numeric(12,2) not null,
+  status text not null default 'pending'
+    check (status in ('pending','approved','rejected')),
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.order_items (
+  id bigint generated by default as identity primary key,
+  order_id bigint not null references public.orders(id) on delete cascade,
+  product_name text not null,
+  category text,
+  unit_price numeric(12,2) not null,
+  quantity integer not null default 1
+);
+
+create table if not exists public.seller_requests (
+  id bigint generated by default as identity primary key,
+  user_id uuid not null references auth.users(id) on delete cascade,
+  shop_name text not null,
+  mobile text not null,
+  category text not null,
+  product_name text not null,
+  product_price numeric(12,2) not null,
+  status text not null default 'pending'
+    check (status in ('pending','approved','rejected')),
+  created_at timestamptz not null default now()
+);
+
+alter table public.admin_users enable row level security;
+alter table public.orders enable row level security;
+alter table public.order_items enable row level security;
+alter table public.seller_requests enable row level security;
+
+-- Helper: true only for users listed in admin_users.
+create or replace function public.is_admin()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select exists (
+    select 1 from public.admin_users
+    where user_id = auth.uid()
+  );
+$$;
+
+-- Admins can manage orders. Customers can insert/view their own orders.
+create policy "customers insert own orders"
+on public.orders for insert to authenticated
+with check (customer_id = auth.uid());
+
+create policy "customers view own orders"
+on public.orders for select to authenticated
+using (customer_id = auth.uid() or public.is_admin());
+
+create policy "admins update orders"
+on public.orders for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+create policy "admins view order items"
+on public.order_items for select to authenticated
+using (
+  public.is_admin()
+  or exists (
+    select 1 from public.orders o
+    where o.id = order_items.order_id
+      and o.customer_id = auth.uid()
+  )
+);
+
+create policy "customers insert order items"
+on public.order_items for insert to authenticated
+with check (
+  exists (
+    select 1 from public.orders o
+    where o.id = order_items.order_id
+      and o.customer_id = auth.uid()
+  )
+);
+
+create policy "customers create seller request"
+on public.seller_requests for insert to authenticated
+with check (user_id = auth.uid());
+
+create policy "customers view own seller request"
+on public.seller_requests for select to authenticated
+using (user_id = auth.uid() or public.is_admin());
+
+create policy "admins update seller requests"
+on public.seller_requests for update to authenticated
+using (public.is_admin())
+with check (public.is_admin());
+
+-- After creating your admin account in Authentication > Users,
+-- insert its UUID here:
+-- insert into public.admin_users(user_id) values ('YOUR-ADMIN-USER-UUID');
+-->
+
+</body>
+</html>
